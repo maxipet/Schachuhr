@@ -1,0 +1,6 @@
+[submodule "src/Grove_4Digital_Display"]
+	path = src/Grove_4Digital_Display
+	url = git@github.com:Seeed-Studio/Grove_4Digital_Display.git
+[submodule "src/JC_Button"]
+	path = src/JC_Button
+	url = git@github.com:JChristensen/JC_Button.git
