@@ -1,22 +1,28 @@
 #include "Schachuhr.h"
 
 // PINS
-#define BTN_P0      1
-#define BTN_P1      2
-#define BTN_PAUSE   3
+#define PIN_BTN_P0      1
+#define PIN_BTN_P1      2
+#define PIN_BTN_PAUSE   3
 
-#define CLK_P0      4
-#define DIO_P0      5
-#define CLK_P1      6
-#define DIO_P1      7
+#define PIN_CLK_P0      4
+#define PIN_DIO_P0      5
+#define PIN_CLK_P1      6
+#define PIN_DIO_P1      7
 
-#define PIEZO       8
+#define PIN_PIEZO       8
 
+// BUTTONS
+Button btn_p0(PIN_BTN_P0);
+Button btn_p1(PIN_BTN_P1);
+Button btn_pause(PIN_BTN_PAUSE);
+
+// DISPLAY
+TM1637 clock_p0(CLK_P0, DIO_P0);
+TM1637 clock_p1(CLK_P1, DIO_P1);
 
 // SETTINGS
-#define DEBOUNCE_TIME 20    // 20ms debouncing
-
-#define TONE        261     // C
+#define TONE 261     // C
 
 // STATE
 Clockstate state;
@@ -29,18 +35,11 @@ int turn;
 long playertime[2];
 long lastTime;
 
-// DISPLAY
-TM1637 clock_p0(CLK_P0, DIO_P0);
-TM1637 clock_p1(CLK_P1, DIO_P1);
-
 // SCHACHUHR
 void setup() {
-    pinMode(BTN_P0, INPUT);
-    pinMode(BTN_P1, INPUT);
-    pinMode(BTN_PAUSE, INPUT);
-    attachInterrupt(BTN_P0, int_btn_p0, LOW);
-    attachInterrupt(BTN_P1, int_btn_p1, LOW);
-    attachInterrupt(BTN_PAUSE, int_btn_pause, LOW);
+    btn_p0.begin();
+    btn_p1.begin();
+    btn_pause.begin();
 
     clock_p0.init();
     clock_p0.set(BRIGHT_TYPICAL);
@@ -56,6 +55,8 @@ void setup() {
 }
 
 void loop() {
+    updateButtons();
+
     switch(state) {
         case MENU:      menu();     break;
         case READY:     ready();    break;
@@ -67,15 +68,47 @@ void loop() {
 
 // LIFECYCLE METHODS
 void menu() {
-    
+    if(btn_p0.wasReleased()) {
+        prevTimectl();
+    }
+    if(btn_p1.wasReleased()) {
+        nextTimectl();
+    }
+    if(btn_pause.wasReleased()) {
+        state = READY;
+        displayPlayertime();
+    }
 }
 
 void ready() {
-
+    if(btn_p0.wasReleased()) {
+        state       = RUNNING;
+        turn        = 1;
+        lastTime    = millis();
+    }
+    if(btn_p1.wasReleased()) {
+        state       = RUNNING;
+        turn        = 0;
+        lastTime    = millis();
+    }
+    if(btn_pause.wasReleased()) {
+        state = MENU; 
+        displayTimeinfo();
+    }
 }
 
 void running() {
     updatePlayertime();
+
+    if(btn_p0.wasReleased()) {
+        if(turn == 0) switchTurn();
+    }
+    if(btn_p1.wasReleased()) {
+        if(turn == 1) switchTurn();
+    }
+    if(btn_pause.wasReleased()) {
+        pause();
+    }
 
     if(playertime[0] <= 0 || playertime[1] <= 0) {
         state = EXPIRED;
@@ -84,106 +117,40 @@ void running() {
 }
 
 void paused() {
-    lastTime = millis();
+    if(btn_p0.wasReleased()) {
+        playertime[0] += seconds(timeconf.increment * 3);
+    }
+    if(btn_p1.wasReleased()) {
+        playertime[1] += seconds(timeconf.increment * 3);
+    }
+    if(btn_pause.wasReleased()) {
+        unpause();
+    }
 }
 
 void expired() {
-    
+    if(btn_p0.wasReleased()) {
+        reset();
+    }
+    if(btn_p1.wasReleased()) {
+        reset();
+    }
+    if(btn_pause.wasReleased()) {
+        reset();
+    }
 }
 
 reset() {
     state = MENU;
 }
 
-// INTERUPTS
-void int_btn_p0() {
-    static long lastInt = 0;
-    if(millis() - lastInt > DEBOUNCE_TIME) {
-
-        switch(state) {
-            case MENU:
-                prevTimectl();
-                break;
-
-            case READY:
-                state       = RUNNING;
-                turn        = 1;
-                lastTime    = millis();
-                break;
-
-            case RUNNING:
-                if(turn == 0)
-                    switchTurn();
-                break;
-
-            case PAUSED:
-                playertime[0] += seconds(timeconf.increment * 3);
-                break;
-            
-            case EXPIRED:   reset(); break;
-        }
-
-        lastInt = millis();
-    }
-}
-
-void int_btn_p1() {
-    static long lastInt = 0;
-    if(millis() - lastInt > DEBOUNCE_TIME) {
-
-        switch(state) {
-            case MENU:
-                nextTimectl();
-                break;
-
-            case READY:
-                state       = RUNNING;
-                turn        = 0;
-                lastTime    = millis();
-                break;
-
-            case RUNNING:
-                if(turn == 1) {
-                    switchTurn();
-                }
-                break;
-
-            case PAUSED:
-                playertime[1] += seconds(timeconf.increment * 3);
-                break;
-
-            case EXPIRED:   reset(); break;
-        }
-    
-        lastInt = millis();
-    }
-}
-
-void int_btn_pause() {
-    static long lastInt = 0;
-    if(millis() - lastInt > DEBOUNCE_TIME) {
-
-        switch(state) {
-            case MENU:
-                state = READY;
-                displayPlayertime();
-                break;
-
-            case READY:
-                state = MENU; 
-                displayTimeinfo();
-                break;
-
-            case RUNNING:   pause();    break;
-            case PAUSED:    unpause();  break;
-            case EXPIRED:   reset();    break;
-        }
-
-        lastInt = millis();
-    }
-}
-
 // HELPERS
+void updateButtons() {
+    btn_p0.read();
+    btn_p1.read();
+    btn_pause.read();
+}
+
 void pause() {
     updatePlayertime();
     state = PAUSED;
@@ -210,13 +177,13 @@ void updatePlayertime() {
 
 void displayPlayertime() {
     // Clock p0
-    clock_p0.point(1);
+    clock_p0.point(POINT_ON);
     clock_p0.display(0, msToMin(playertime[0]) / 10 % 10);
     clock_p0.display(1, msToMin(playertime[0]) % 10);
     clock_p0.display(2, msToSecOfMin(playertime[0]) / 10 % 10);
     clock_p0.display(3, msToSecOfMin(playertime[0]) % 10);
     // Clock p0
-    clock_p1.point(1);
+    clock_p1.point(POINT_ON);
     clock_p1.display(0, msToMin(playertime[1]) / 10 % 10);
     clock_p1.display(1, msToMin(playertime[1]) % 10);
     clock_p1.display(2, msToSecOfMin(playertime[1]) / 10 % 10);
@@ -225,13 +192,13 @@ void displayPlayertime() {
 
 void displayTimeinfo() {
     // Clock p0
-    clock_p0.point(0);
+    clock_p0.point(POINT_OFF);
     clock_p0.display(0, msToMin(timeconf.time) / 1000 % 10);
     clock_p0.display(1, msToMin(timeconf.time) / 100 % 10);
     clock_p0.display(2, msToMin(timeconf.time) / 10 % 10);
     clock_p0.display(3, msToMin(timeconf.time) % 10);
     // Clock p0
-    clock_p1.point(0);
+    clock_p1.point(POINT_OFF);
     clock_p1.display(0, msToSec(timeconf.increment) / 1000 % 10);
     clock_p1.display(1, msToSec(timeconf.increment) / 100 % 10);
     clock_p1.display(2, msToSec(timeconf.increment) / 10 % 10);

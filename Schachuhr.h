@@ -13,6 +13,8 @@ typedef enum clockstate {
     EXPIRED
 } Clockstate;
 
+void updateButtons();
+
 void pause();
 void unpause();
 
