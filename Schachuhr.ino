@@ -10,7 +10,13 @@
 #define CLK_P1      6
 #define DIO_P1      7
 
-#define DEBOUNCE_TIME 20 // 20ms debouncing
+#define PIEZO       8
+
+
+// SETTINGS
+#define DEBOUNCE_TIME 20    // 20ms debouncing
+
+#define TONE        261     // C
 
 // STATE
 Clockstate state;
@@ -41,12 +47,18 @@ void setup() {
     clock_p1.init();
     clock_p1.set(BRIGHT_TYPICAL);
 
+    pinMode(PIEZO, OUTPUT);
+
+    timectl = RAPID;
+    displayTimeinfo();
+
     state = MENU;
 }
 
 void loop() {
     switch(state) {
         case MENU:      menu();     break;
+        case READY:     ready();    break;
         case RUNNING:   running();  break;
         case PAUSED:    paused();   break;
         case EXPIRED:   expired();  break;
@@ -55,14 +67,11 @@ void loop() {
 
 // LIFECYCLE METHODS
 void menu() {
-    timectl       = RAPID;
-    timeconf      = get_conf(timectl);
-    lastTime      = millis();
-    playertime[0] = timeconf.time;
-    playertime[1] = timeconf.time;
-    turn          = 0;
+    
+}
 
-    state = PAUSED;
+void ready() {
+
 }
 
 void running() {
@@ -70,6 +79,7 @@ void running() {
 
     if(playertime[0] <= 0 || playertime[1] <= 0) {
         state = EXPIRED;
+        tone(PIEZO, TONE, seconds(1));
     }
 }
 
@@ -78,11 +88,11 @@ void paused() {
 }
 
 void expired() {
-    if(playertime[0] <= 0) {
-        
-    } else {
+    
+}
 
-    }
+reset() {
+    state = MENU;
 }
 
 // INTERUPTS
@@ -91,10 +101,26 @@ void int_btn_p0() {
     if(millis() - lastInt > DEBOUNCE_TIME) {
 
         switch(state) {
+            case MENU:
+                prevTimectl();
+                break;
+
+            case READY:
+                state       = RUNNING;
+                turn        = 1;
+                lastTime    = millis();
+                break;
+
             case RUNNING:
-                if(turn == 1) {
+                if(turn == 0)
                     switchTurn();
-                }
+                break;
+
+            case PAUSED:
+                playertime[0] += seconds(timeconf.increment * 3);
+                break;
+            
+            case EXPIRED:   reset(); break;
         }
 
         lastInt = millis();
@@ -106,10 +132,27 @@ void int_btn_p1() {
     if(millis() - lastInt > DEBOUNCE_TIME) {
 
         switch(state) {
+            case MENU:
+                nextTimectl();
+                break;
+
+            case READY:
+                state       = RUNNING;
+                turn        = 0;
+                lastTime    = millis();
+                break;
+
             case RUNNING:
                 if(turn == 1) {
                     switchTurn();
                 }
+                break;
+
+            case PAUSED:
+                playertime[1] += seconds(timeconf.increment * 3);
+                break;
+
+            case EXPIRED:   reset(); break;
         }
     
         lastInt = millis();
@@ -121,8 +164,19 @@ void int_btn_pause() {
     if(millis() - lastInt > DEBOUNCE_TIME) {
 
         switch(state) {
+            case MENU:
+                state = READY;
+                displayPlayertime();
+                break;
+
+            case READY:
+                state = MENU; 
+                displayTimeinfo();
+                break;
+
             case RUNNING:   pause();    break;
             case PAUSED:    unpause();  break;
+            case EXPIRED:   reset();    break;
         }
 
         lastInt = millis();
@@ -142,6 +196,7 @@ void unpause() {
 
 void switchTurn() {
     updatePlayertime();
+    playertime[turn] += increment;
     turn = (turn + 1) % 2; // toggles between 0 and 1
 }
 
@@ -166,4 +221,35 @@ void displayPlayertime() {
     clock_p1.display(1, msToMin(playertime[1]) % 10);
     clock_p1.display(2, msToSecOfMin(playertime[1]) / 10 % 10);
     clock_p1.display(3, msToSecOfMin(playertime[1]) % 10);
+}
+
+void displayTimeinfo() {
+    // Clock p0
+    clock_p0.point(0);
+    clock_p0.display(0, msToMin(timeconf.time) / 1000 % 10);
+    clock_p0.display(1, msToMin(timeconf.time) / 100 % 10);
+    clock_p0.display(2, msToMin(timeconf.time) / 10 % 10);
+    clock_p0.display(3, msToMin(timeconf.time) % 10);
+    // Clock p0
+    clock_p1.point(0);
+    clock_p1.display(0, msToSec(timeconf.increment) / 1000 % 10);
+    clock_p1.display(1, msToSec(timeconf.increment) / 100 % 10);
+    clock_p1.display(2, msToSec(timeconf.increment) / 10 % 10);
+    clock_p1.display(3, msToSec(timeconf.increment) % 10);
+}
+
+void nextTimectl() {
+    timectl = (timectl + 1) % SIZE;
+    timeconf = get_conf(timectl);
+    playertime[0] = timeconf.time;
+    playertime[1] = timeconf.time;
+    displayTimeinfo();
+}
+
+void prevTimectl() {
+    timectl = (timectl - 1) % SIZE;
+    timeconf = get_conf(timectl);
+    playertime[0] = timeconf.time;
+    playertime[1] = timeconf.time;
+    displayTimeinfo();
 }

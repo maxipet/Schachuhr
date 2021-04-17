@@ -6,6 +6,7 @@
 
 typedef enum clockstate {
     MENU,
+    READY,
     RUNNING,
     PAUSED,
     EXPIRED
@@ -18,3 +19,7 @@ void switchTurn();
 
 void updatePlayertime();
 void displayPlayertime();
+void displayTimeinfo();
+
+void nextTimectl();
+void prevTimectl();

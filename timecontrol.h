@@ -4,6 +4,7 @@
 #define seconds(S) (S * 1000)
 
 #define msToMin(MS)         (MS / 1000 / 60);
+#define msToSec(MS)         (MS / 1000);
 #define msToSecOfMin(MS)    ((MS / 1000) % 60);
 
 typedef struct Timecontrol_Conf {
@@ -12,11 +13,12 @@ typedef struct Timecontrol_Conf {
 } Timecontrol_Conf;
 
 typedef enum Timecontrol {
-    BULLET,
-    BLITZ,
-    RAPID,
-    CLASSIC,
-    LONG
+    BULLET  = 0,
+    BLITZ   = 1,
+    RAPID   = 2,
+    CLASSIC = 3,
+    LONG    = 4,
+    SIZE    = 5
 } Timecontrol;
 
 Timecontrol_Conf get_conf(Timecontrol timectl);
