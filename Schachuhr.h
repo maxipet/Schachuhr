@@ -1,9 +1,10 @@
-#pragma once
+#ifndef Schachuhr_H
+#define Schachuhr_H
 
-#include "libs/Grove_4Digital_Display/TM1637.h"
-#include "libs/JC_Button/src/JC_Button.h"
+#include "src/Grove_4Digital_Display/TM1637.h"
+#include "src/JC_Button/src/JC_Button.h"
 
-#include "timecontrol.h"
+#include "Timecontrol.h"
 
 typedef enum clockstate {
     MENU,
@@ -17,6 +18,7 @@ void updateButtons();
 
 void pause();
 void unpause();
+void reset();
 
 void switchTurn();
 
@@ -26,3 +28,5 @@ void displayTimeinfo();
 
 void nextTimectl();
 void prevTimectl();
+
+#endif

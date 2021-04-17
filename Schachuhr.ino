@@ -18,8 +18,8 @@ Button btn_p1(PIN_BTN_P1);
 Button btn_pause(PIN_BTN_PAUSE);
 
 // DISPLAY
-TM1637 clock_p0(CLK_P0, DIO_P0);
-TM1637 clock_p1(CLK_P1, DIO_P1);
+TM1637 clock_p0(PIN_CLK_P0, PIN_DIO_P0);
+TM1637 clock_p1(PIN_CLK_P1, PIN_DIO_P1);
 
 // SETTINGS
 #define TONE 261     // C
@@ -46,7 +46,7 @@ void setup() {
     clock_p1.init();
     clock_p1.set(BRIGHT_TYPICAL);
 
-    pinMode(PIEZO, OUTPUT);
+    pinMode(PIN_PIEZO, OUTPUT);
 
     timectl = RAPID;
     displayTimeinfo();
@@ -112,7 +112,7 @@ void running() {
 
     if(playertime[0] <= 0 || playertime[1] <= 0) {
         state = EXPIRED;
-        tone(PIEZO, TONE, seconds(1));
+        tone(PIN_PIEZO, TONE, seconds(1));
     }
 }
 
@@ -140,7 +140,7 @@ void expired() {
     }
 }
 
-reset() {
+void reset() {
     state = MENU;
 }
 
@@ -163,7 +163,7 @@ void unpause() {
 
 void switchTurn() {
     updatePlayertime();
-    playertime[turn] += increment;
+    playertime[turn] += timeconf.increment;
     turn = (turn + 1) % 2; // toggles between 0 and 1
 }
 
