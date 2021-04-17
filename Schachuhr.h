@@ -4,7 +4,9 @@
 #include "src/Grove_4Digital_Display/TM1637.h"
 #include "src/JC_Button/src/JC_Button.h"
 
-#include "Timecontrol.h"
+extern "C" {
+  #include "Timecontrol.h"
+}
 
 typedef enum clockstate {
     MENU,
