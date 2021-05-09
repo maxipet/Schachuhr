@@ -212,7 +212,7 @@ void displayTimeinfo() {
 }
 
 void nextTimectl() {
-    timectl = (timectl + 1) % SIZE;
+    timectl = static_cast<Timecontrol>((timectl - 1) % SIZE);
     timeconf = get_conf(timectl);
     playertime[0] = timeconf.time;
     playertime[1] = timeconf.time;
@@ -220,7 +220,6 @@ void nextTimectl() {
 }
 
 void prevTimectl() {
-    
     timectl = timectl - 1;
     if(timectl < 0) timectl = SIZE - 1;
     timeconf = get_conf(timectl);
