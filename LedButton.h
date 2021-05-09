@@ -5,7 +5,7 @@
 
 #include "src/JC_Button/src/JC_Button.h"
 
-class LedButton : Button
+class LedButton : public Button
 {
     public:
 
@@ -43,6 +43,6 @@ class LedButton : Button
     private:
         uint8_t m_pinLed;   // arduino pin for Led
         bool m_ledState;    // current state of Led
-}
+};
 
 #endif
