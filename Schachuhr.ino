@@ -2,8 +2,11 @@
 
 // PINS
 #define PIN_BTN_P0      2
+#define PIN_LED_P0      3
 #define PIN_BTN_P1      4
-#define PIN_BTN_PAUSE   3
+#define PIN_LED_P1      5
+#define PIN_BTN_PAUSE   6
+#define PIN_LED_PAUSE   7
 
 #define PIN_CLK_P0      10
 #define PIN_DIO_P0      11
@@ -13,9 +16,9 @@
 #define PIN_PIEZO       9
 
 // BUTTONS
-Button btn_p0(PIN_BTN_P0);
-Button btn_p1(PIN_BTN_P1);
-Button btn_pause(PIN_BTN_PAUSE);
+LedButton btn_p0(PIN_BTN_P0, PIN_LED_P0);
+LedButton btn_p1(PIN_BTN_P1, PIN_LED_P1);
+LedButton btn_pause(PIN_BTN_PAUSE, PIN_LED_PAUSE);
 
 // DISPLAY
 TM1637 clock_p0(PIN_CLK_P0, PIN_DIO_P0);

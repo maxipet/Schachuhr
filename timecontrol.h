@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef Timecontrol_H
 #define Timecontrol_H
 
@@ -24,4 +28,8 @@ typedef enum Timecontrol {
 
 Timecontrol_Conf get_conf(Timecontrol timectl);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
