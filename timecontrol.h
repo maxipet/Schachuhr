@@ -1,12 +1,12 @@
 #ifndef Timecontrol_H
 #define Timecontrol_H
 
-#define minutes(M) (M * 1000 * 60)
-#define seconds(S) (S * 1000)
+#define minutes(M) (M * 1000L * 60L)
+#define seconds(S) (S * 1000L)
 
-#define msToMin(MS)         (MS / 1000 / 60)
-#define msToSec(MS)         (MS / 1000)
-#define msToSecOfMin(MS)    ((MS / 1000) % 60)
+#define msToMin(MS)         (MS / 1000L / 60L)
+#define msToSec(MS)         (MS / 1000L)
+#define msToSecOfMin(MS)    ((MS / 1000L) % 60L)
 
 typedef struct Timecontrol_Conf {
     long time;

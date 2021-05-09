@@ -1,16 +1,16 @@
 #include "Schachuhr.h"
 
 // PINS
-#define PIN_BTN_P0      1
-#define PIN_BTN_P1      2
+#define PIN_BTN_P0      2
+#define PIN_BTN_P1      4
 #define PIN_BTN_PAUSE   3
 
-#define PIN_CLK_P0      4
-#define PIN_DIO_P0      5
-#define PIN_CLK_P1      6
-#define PIN_DIO_P1      7
+#define PIN_CLK_P0      10
+#define PIN_DIO_P0      11
+#define PIN_CLK_P1      12
+#define PIN_DIO_P1      13
 
-#define PIN_PIEZO       8
+#define PIN_PIEZO       9
 
 // BUTTONS
 Button btn_p0(PIN_BTN_P0);
@@ -37,6 +37,8 @@ long lastTime;
 
 // SCHACHUHR
 void setup() {
+    Serial.begin(9600);
+    
     btn_p0.begin();
     btn_p1.begin();
     btn_pause.begin();
@@ -49,6 +51,7 @@ void setup() {
     pinMode(PIN_PIEZO, OUTPUT);
 
     timectl = RAPID;
+    timeconf = get_conf(timectl);
     displayTimeinfo();
 
     state = MENU;
@@ -118,10 +121,12 @@ void running() {
 
 void paused() {
     if(btn_p0.wasReleased()) {
-        playertime[0] += seconds(timeconf.increment * 3);
+        playertime[0] += timeconf.increment * 3;
+        displayPlayertime();
     }
     if(btn_p1.wasReleased()) {
-        playertime[1] += seconds(timeconf.increment * 3);
+        playertime[1] += timeconf.increment * 3;
+        displayPlayertime();
     }
     if(btn_pause.wasReleased()) {
         unpause();
@@ -142,6 +147,7 @@ void expired() {
 
 void reset() {
     state = MENU;
+    displayTimeinfo();
 }
 
 // HELPERS
@@ -168,7 +174,7 @@ void switchTurn() {
 }
 
 void updatePlayertime() {
-    long deltaTime = lastTime - millis();
+    long deltaTime = millis() - lastTime;
     playertime[turn] -= deltaTime;
     lastTime = millis();
 
@@ -199,9 +205,9 @@ void displayTimeinfo() {
     clock_p0.display(3, msToMin(timeconf.time) % 10);
     // Clock p0
     clock_p1.point(POINT_OFF);
-    clock_p1.display(0, msToSec(timeconf.increment) / 1000 % 10);
-    clock_p1.display(1, msToSec(timeconf.increment) / 100 % 10);
-    clock_p1.display(2, msToSec(timeconf.increment) / 10 % 10);
+    clock_p1.display(0, (msToSec(timeconf.increment) / 1000) % 10);
+    clock_p1.display(1, (msToSec(timeconf.increment) / 100) % 10);
+    clock_p1.display(2, (msToSec(timeconf.increment) / 10) % 10);
     clock_p1.display(3, msToSec(timeconf.increment) % 10);
 }
 
@@ -214,7 +220,9 @@ void nextTimectl() {
 }
 
 void prevTimectl() {
-    timectl = (timectl - 1) % SIZE;
+    
+    timectl = timectl - 1;
+    if(timectl < 0) timectl = SIZE - 1;
     timeconf = get_conf(timectl);
     playertime[0] = timeconf.time;
     playertime[1] = timeconf.time;
