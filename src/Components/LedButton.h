@@ -1,9 +1,9 @@
-#ifndef Button_H
-#define Button_H
+#ifndef LedButton_H
+#define LedButton_H
 
 #include <Arduino.h>
 
-#include "src/JC_Button/src/JC_Button.h"
+#include "../JC_Button/src/JC_Button.h"
 
 class LedButton : public Button
 {
