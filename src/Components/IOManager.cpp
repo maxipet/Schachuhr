@@ -61,6 +61,30 @@ int IOManager::rangeMenu(char name[], int min, int max, int step, int start) {
     return cur;
 }
 
+int IOManager::keyMenu(char name[], String values[], int start) {
+    int cur = start;
+    int length = sizeof(values) / sizeof(values[0]);
+    display_left->displayStr(name);
+    display_right->displayStr(values[cur]);
+    do {
+        updateButtons();
+        
+        if(btn_left->wasReleased()) {
+            cur -= 1;
+            if(cur < 0) {
+                cur = length - 1;
+            }
+            display_right->displayStr(values[cur]);
+        }
+        if(btn_right->wasReleased()) {
+            cur = (cur + 1) % length;
+            display_right->displayStr(values[cur]);
+        }
+    } while(!btn_pause->wasReleased());
+
+    return cur;
+}
+
 // Singleton Stuff
 IOManager* IOManager::instance = 0;
 
