@@ -61,7 +61,7 @@ int IOManager::rangeMenu(char name[], int min, int max, int step, int start) {
     return cur;
 }
 
-int IOManager::keyMenu(char name[], String values[], int start) {
+int IOManager::keyMenu(char name[], char values[][5], int start) {
     int cur = start;
     int length = sizeof(values) / sizeof(values[0]);
     display_left->displayStr(name);

@@ -1,6 +1,5 @@
 #include "Schachuhr.h"
 
-// GAME
 Game* game;
 
 IOManager* io;
@@ -12,5 +11,6 @@ void setup() {
 }
 
 void loop() {
-    
+    // TODO: menu for selecting mode
+    // TODO: switch for mode selection
 }

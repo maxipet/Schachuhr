@@ -11,7 +11,16 @@ void Game::run() {
 
     running();
     expired();
-};
+}
+
+void Game::setup() {
+    int list[] = {1,2,3,5,10,15,20,30,45,60,90,120,180};
+    startTime = minToMs(io->selectMenu(
+        "TIME", 
+        list,
+        5
+    ));
+}
 
 bool Game::ready() {
     playerTimes[LEFT] = startTime;
@@ -35,7 +44,7 @@ bool Game::ready() {
             return false;
         }
     }
-};
+}
 
 void Game::running() {
     do {
@@ -52,7 +61,7 @@ void Game::running() {
             paused();
         }
     } while(playerTimes[LEFT] <= 0 || playerTimes[RIGHT] <= 0);
-};
+}
 
 void Game::expired() {
     io->piezo->play(261, 1000);

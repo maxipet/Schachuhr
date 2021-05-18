@@ -4,15 +4,6 @@ AbsoluteGame::AbsoluteGame() {
     
 }
 
-void AbsoluteGame::setup() {
-    int list[] = {1,2,3,5,10,15,20,30,45,60,90,120,180};
-    startTime = minToMs(io->selectMenu(
-        "TIME", 
-        list,
-        5
-    ));
-}
-
 void AbsoluteGame::update() {
     long deltaTime = millis() - lastTime;
     addPlayerTime(currentTurn, -deltaTime);

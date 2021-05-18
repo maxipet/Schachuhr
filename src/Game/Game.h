@@ -18,7 +18,7 @@ class Game {
         void run();
 
     protected:
-        virtual void setup() = 0;
+        virtual void setup();
         bool ready();
         void running();
         virtual void update() = 0;
@@ -28,6 +28,7 @@ class Game {
 
     protected:
         long playerTimes[2];
+        long startTime;
         long lastTime;
         Player currentTurn;
 
@@ -44,13 +45,9 @@ class AbsoluteGame : public Game {
         AbsoluteGame();
 
     protected:
-        virtual void setup();
         virtual void update();
         virtual void turn();
         virtual void paused();
-
-    protected:
-        long startTime;
 };
 
 class FischerGame : public AbsoluteGame {

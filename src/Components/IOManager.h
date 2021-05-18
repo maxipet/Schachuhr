@@ -30,7 +30,7 @@ class IOManager {
 
         int selectMenu(char name[], int values[], int start = 0);
         int rangeMenu(char name[], int min, int max, int start, int step = 1);
-        int keyMenu(char name[], String values[], int start = 0);
+        int keyMenu(char name[], char values[][5], int start = 0);
 
     // Singleton Stuff
     private:
