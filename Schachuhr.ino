@@ -11,9 +11,16 @@ void setup() {
 }
 
 void loop() {
+    char modes[5][5];
+    modes[0] = "Fish";
+    modes[1] = "Abso";
+    modes[2] = "Gilo";
+    modes[3] = "Hour";
+    modes[4] = "Bron";
+
     int mode = io->keyMenu(
         "MODE",
-        {"Fish","Abs","Gilo","Hour","Bron"}
+        modes
     );
 
     switch(mode) {
