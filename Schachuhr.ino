@@ -9,8 +9,10 @@ void setup() {
 
     io = IOManager::getInstance();
 
-    Test* test = new Test();
-    test->ButtonTest();
+    //Test* test = new Test();
+    //test->MenuTest();
+    //test->ButtonTest();
+    //test->DisplayTest();
 }
 
 void loop() {
