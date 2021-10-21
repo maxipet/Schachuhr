@@ -8,6 +8,9 @@ void setup() {
     //Serial.begin(9600);
 
     io = IOManager::getInstance();
+
+    Test* test = new Test();
+    test->ButtonTest();
 }
 
 void loop() {
