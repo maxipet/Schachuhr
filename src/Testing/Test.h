@@ -10,6 +10,7 @@ class Test {
 
         void MenuTest();
         void ButtonTest();
+        void DisplayTest();
 
     protected:
         IOManager* io;

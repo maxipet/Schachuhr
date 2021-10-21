@@ -34,3 +34,16 @@ void Test::ButtonTest() {
     btn->setLed(false);
     delay(1000);
 }
+
+void Test::DisplayTest() {
+    Display* display = io->display_left;
+
+    display->displayStr("TEST");
+    delay(4000);
+    display->displayTime(55L, 30L);
+    delay(4000);
+    display->displayTime(115L, 30L);
+    delay(4000);
+    display->displayNumber(1337);
+
+}
