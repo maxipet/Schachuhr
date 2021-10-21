@@ -2,7 +2,7 @@
 
 BronsteinGame::BronsteinGame() {
     currentDelay = 0L;
-};
+}
 
 void BronsteinGame::setup() {
     AbsoluteGame::setup();
@@ -13,7 +13,7 @@ void BronsteinGame::setup() {
         list,
         3
     ));
-};
+}
 
 void BronsteinGame::update() {
     long deltaTime = millis() - lastTime;
@@ -25,9 +25,9 @@ void BronsteinGame::update() {
     }
 
     lastTime = millis();
-};
+}
 
 void BronsteinGame::turn() {
     currentDelay = 0L;
     AbsoluteGame::turn();
-};
+}

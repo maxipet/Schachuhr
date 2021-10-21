@@ -2,7 +2,7 @@
 
 HourglassGame::HourglassGame() {
 
-};
+}
 
 void HourglassGame::update() {
     long deltaTime = millis() - lastTime;
