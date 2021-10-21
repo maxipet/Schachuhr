@@ -4,10 +4,19 @@ Test::Test() {
     io = IOManager::getInstance();
 }
 
-Test::MenuTest() {
-    
+void Test::MenuTest() {
+
 }
 
-Test::ButtonTest() {
+void Test::ButtonTest() {
+    LedButton* btn = io.btn_left;
 
+    btn->setLed(false);
+    while(!btn->pressedFor(2000)) {
+        btn->read();
+
+        if(btn->wasReleased()) {
+            btn->toggleLed();
+        }
+    }
 }

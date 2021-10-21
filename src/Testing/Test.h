@@ -1,6 +1,8 @@
 #ifndef Test_H
 #define Test_H
 
+#include "../Components/IOManager.h"
+
 class Test {
 
     public:
