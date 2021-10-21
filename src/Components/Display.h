@@ -10,6 +10,10 @@ class Display : public TM1637 {
         Display(uint8_t clk, uint8_t data)
             : TM1637(clk, data) {}
     
+        void displayStr(String name) {
+            TM1637::displayStr(name.c_str());
+        }
+
         void displayTime(long min, long sec) {
             TM1637::point(POINT_ON);
             TM1637::display(0, min / 10 % 10);

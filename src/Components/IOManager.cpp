@@ -6,7 +6,7 @@ void IOManager::updateButtons() {
     btn_pause->read();
 }
 
-int IOManager::selectMenu(char name[], int values[], int start) {
+int IOManager::selectMenu(String name, int values[], int start) {
     int cur = start;
     int length = sizeof(values) / sizeof(values[0]);
     display_left->displayStr(name);
@@ -30,7 +30,7 @@ int IOManager::selectMenu(char name[], int values[], int start) {
     return values[cur];
 }
 
-int IOManager::rangeMenu(char name[], int min, int max, int step, int start) {
+int IOManager::rangeMenu(String name, int min, int max, int step, int start) {
     int cur = start;
     if(cur > max)
         cur = max;
@@ -61,7 +61,7 @@ int IOManager::rangeMenu(char name[], int min, int max, int step, int start) {
     return cur;
 }
 
-int IOManager::keyMenu(char name[], char values[][5], int start) {
+int IOManager::keyMenu(String name, String values[], int start) {
     int cur = start;
     int length = sizeof(values) / sizeof(values[0]);
     display_left->displayStr(name);

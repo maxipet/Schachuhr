@@ -11,12 +11,7 @@ void setup() {
 }
 
 void loop() {
-    char modes[5][5];
-    modes[0] = "Fish";
-    modes[1] = "Abso";
-    modes[2] = "Gilo";
-    modes[3] = "Hour";
-    modes[4] = "Bron";
+    String modes[] = {"Fish","Abso","Gilo","Hour","Bron"};
 
     int mode = io->keyMenu(
         "MODE",

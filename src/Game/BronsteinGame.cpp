@@ -9,7 +9,7 @@ void BronsteinGame::setup() {
 
     int list[] = {1,2,3,5,10,15,30,60,90,120};
     delay = secToMs(io->selectMenu(
-        "Incr",
+        "dely",
         list,
         3
     ));
