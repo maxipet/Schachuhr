@@ -32,6 +32,8 @@ class IOManager {
         int rangeMenu(char name[], int min, int max, int start, int step = 1);
         int keyMenu(char name[], char values[][5], int start = 0);
 
+        void(* reset) (void) = 0;
+
     // Singleton Stuff
     private:
         static IOManager* instance;
