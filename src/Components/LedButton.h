@@ -9,7 +9,7 @@ class LedButton : public Button
 {
     public:
 
-        LedButton(uint8_t pin, uint8_t pinLed, bool initialState=false, uint32_t dbTime=25, uint8_t puEnable=true, uint8_t invert=true)
+        LedButton(uint8_t pin, uint8_t pinLed, bool initialState=false, uint32_t dbTime=25, uint8_t puEnable=true, uint8_t invert=false)
             : Button(pin, dbTime, puEnable, invert), m_pinLed(pinLed), m_ledState(initialState) {}
 
         void begin() {
